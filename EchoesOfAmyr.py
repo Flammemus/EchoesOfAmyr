@@ -253,20 +253,7 @@ while gameLoop:
             print("Your essence bears wounds, weary traveler. Heed the whispers of nature's boons, and let solace mend your spirit for safety")
 
     if action == "commands":
-        print("@*=== commands ===*@"), print()
-        print("hunt              - Discover a menacing presence, ready to battle")
-        print("heal              - Rejuvenate with your healing potion's magic")
-        print("stats             - Review your character's details")
-        print("map               - Explore your local map in detail")
-        print("travel (location) - Eplore the marked location on your map")
-        print("look around       - Explore the surroundings in the city")
-        print("enter (location)  - Enter desired building or place in your current area")
-        print("commands          - Discover more actions on the logbook's reverse")
-        print()
-        print("characters              - View all saved characters")
-        print("save                    - Save your current progress")
-        print("load (character name)   - Load that specific character")
-        print("delete (character name) - Delete that character from the save file")
+        showCommands()
     
     if action == "heal":
 
