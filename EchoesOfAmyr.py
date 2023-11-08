@@ -1,129 +1,36 @@
 import random
 import time
-import json
-import os
-from ClassesTbrpg import *
+# import json
 from ascii_magic import AsciiArt
-from colorama import Fore, Back, Style
-from termcolor import colored, cprint
+from ClassesTbrpg import *
+from JsonCode import *
 
-player_data_file = "player_data.json"
+skitterCrab = Enemy("Skitter Crab", hp=25, maxHp=25, damage=5, marks=1, xp=4)
+drenchscaleSerpent = Enemy("Drenchscale Serpent", hp=50, maxHp=50, damage=7, marks=2, xp=6)
+naridianSiren = Enemy("Naridian Siren", hp=50, maxHp=50, damage=9, marks=2, xp=6)
+eldertideLeviathan = Enemy("Eldertide Leviathan", hp=120, maxHp=120, damage=10, marks=6, xp=15)
 
-def save_player_data(player_data):
-    # Read existing data from the file
-    existing_data = []
-    if os.path.exists(player_data_file):
-        with open(player_data_file, 'r') as file:
-            existing_data = [json.loads(line) for line in file if line.strip()]
-
-    # Check if the player already exists and update the data
-    player_exists = False
-    for saved_player in existing_data:
-        if saved_player['name'] == player_data['name']:
-            saved_player.update(player_data)
-            player_exists = True
-            break
-
-    # If the player doesn't exist, add the data to the existing data
-    if not player_exists:
-        existing_data.append(player_data)
-
-    # Write all the data back to the file
-    with open(player_data_file, 'w') as file:
-        for player in existing_data:
-            json.dump(player, file)
-            file.write('\n')
-
-def load_player(player_name):
-    with open(player_data_file, 'r') as file:
-        for line in file:
-            saved_player = json.loads(line)
-            if saved_player['name'] == player_name:
-                global player  # Use the global player object
-                player.name = saved_player['name']
-                player.hp = saved_player['hp']
-                player.maxHp = saved_player['maxHp']
-                player.dmg = saved_player['dmg']
-                player.defense = saved_player['defense']
-                player.marks = saved_player['marks']
-                player.playerClass = saved_player['playerClass']
-                player.level = saved_player['level']
-                player.xp = saved_player['xp']
-                player.maxXp = saved_player['maxXp']
-                player.areaName = saved_player['areaName']
-                player.skillPoints = saved_player['skillPoints']
-                player.strength = saved_player['strenght']
-                player.agility = saved_player['agility']
-                player.will = saved_player['will']
-                print(f"Player data for {player_name} loaded successfully!")
-                return
-        print(f"No saved data found for {player_name}.")
-
-def saveGame():
-    player_data = {
-        'name': player.name,
-        'hp': player.hp,
-        'maxHp': player.maxHp,
-        'dmg': player.dmg,
-        'defense': player.defense,
-        'marks': player.marks,
-        'areaName': player.areaName,
-        'playerClass': player.playerClass,
-        'level': player.level,
-        'xp': player.xp,
-        'maxXp': player.maxXp,
-        'skillPoints': player.skillPoints,
-        'strenght': player.strength,
-        'agility': player.agility,
-        'will': player.will
-    }
-    save_player_data(player_data)
-
-def delete_character(character_name):
-    with open(player_data_file, 'r') as file:
-        lines = file.readlines()
-
-    deleted = False
-    with open(player_data_file, 'w') as file:
-        for line in lines:
-            saved_player = json.loads(line)
-            if saved_player['name'] == character_name:
-                deleted = True
-            else:
-                json.dump(saved_player, file)
-                file.write('\n')
-
-    return deleted
-
-skitterCrab = Enemy("Skitter Crab", hp=25, maxHp=25, dmg=5, marks=1, xp=4)
-drenchscaleSerpent = Enemy("Drenchscale Serpent", hp=50, maxHp=50, dmg=7, marks=2, xp=6)
-naridianSiren = Enemy("Naridian Siren", hp=50, maxHp=50, dmg=9, marks=2, xp=6)
-eldertideLeviathan = Enemy("Eldertide Leviathan", hp=120, maxHp=120, dmg=10, marks=6, xp=15)
-
-shamblingUndead = Enemy("Shambling Undead", hp=80, maxHp=80, dmg=10, marks=4, xp=9)
+shamblingUndead = Enemy("Shambling Undead", hp=80, maxHp=80, damage=10, marks=4, xp=9)
 
 windlassShore = Areas("Windlass Shore", safehaven=False, order=1, enemies=[skitterCrab, drenchscaleSerpent, naridianSiren, eldertideLeviathan])
 firwoodRetreat = Areas("Firwood Retreat", safehaven=True, order=2, enemies=[])
 eldVintasRuins = Areas("Eld Vintas Ruins", safehaven=False, order=3, enemies=[shamblingUndead])
 
-player = Player("TesterGuy", hp=10, maxHp=1000, dmg=15, eqWeapon="fists", eqArmor="rags", defense=5, marks=10000, areaName=windlassShore.name, playerClass="Wretched", level=1, xp=0, maxXp=50, skillPoints=0, strength=5, agility=5, will=5, hasHorse=True, hasBeenInFirwoodRetreat=True, hasBeenInAncientLibrary=True)
+player = Player("TesterGuy", hp=10, maxHp=1000, damage=15, defense=1, eqWeapon="fists", eqArmor="rags", marks=10000, areaName=windlassShore.name, playerClass="Wretched", level=1, xp=0, maxXp=50, skillPoints=0, strength=5, agility=5, willpower=5, hasHorse=True, hasBeenInFirwoodRetreat=True, hasBeenInAncientLibrary=True)
 player.chosenClass("Warrior")
 
-if player.name == "TesterGuy":
-    playerHasHorse = True
+steelDagger = Weapons("Steel Dagger", damage=15, cost=40)
+mastercraftedSteelDagger = Weapons("Mastercrafted Steel Dagger", damage=20, cost=80)
 
-steelDagger = Weapons("Steel Dagger", dmgBonus=15, cost=40)
-mastercraftedSteelDagger = Weapons("Mastercrafted Steel Dagger", dmgBonus=20, cost=80)
+steelLongsword = Weapons("Steel Longsword", damage=15, cost=40)
+mastercraftedSteelLongsword = Weapons("Mastercrafted Steel Longsword", damage=20, cost=80)
 
-steelLongsword = Weapons("Steel Longsword", dmgBonus=15, cost=40)
-mastercraftedSteelLongsword = Weapons("Mastercrafted Steel Longsword", dmgBonus=20, cost=80)
+oakStaff = Weapons("Oak Staff", damage=15, cost=40)
+pineStaff = Weapons("Pine Staff", damage=20, cost=80)
 
-oakStaff = Weapons("Oak Staff", dmgBonus=15, cost=40)
-pineStaff = Weapons("Pine Staff", dmgBonus=20, cost=80)
+leatherSet = Armor("Leather Wear", defense=5, strength=3, agility=3, willpower=1, cost=50)
 
-leatherSet = Armor("Armor", defBonus=5, strBonus=3, agiBonus=3, willBonus=1, cost=50)
-
-lesserHealingPotion = Potion("Lesser Healing Potion", healingValue=60, cost=1)
+lesserHealingPotion = Potion("Lesser Healing Potion", healing=60, cost=1)
 
 def startGame():
     print("")
@@ -155,11 +62,11 @@ while gameLoop:
 
         print(f"{enemy.name} stats:"), print()
         print(f" * {enemy.hp} / {enemy.maxHp} Hp")
-        print(f" * {enemy.dmg} Dmg")
+        print(f" * {enemy.damage} Dmg")
         print()
         print("Your stats:"), print()
         print(f" * {player.hp} / {player.maxHp} Hp")
-        print(f" * {player.dmg} dmg"), print()
+        print(f" * {player.damage} dmg"), print()
         print("@*======================*@"), print()
 
         while battleGoing == False:
@@ -218,7 +125,7 @@ while gameLoop:
                         lvlProcess = False
 
 
-                saveGame()
+                saveGame(player)
                 break
 
             if player.hp < 1:
@@ -257,8 +164,8 @@ while gameLoop:
     
     if action == "heal":
 
-        if player.hp < (player.maxHp - lesserHealingPotion.healingValue):
-            player.hp += lesserHealingPotion.healingValue
+        if player.hp < (player.maxHp - lesserHealingPotion.healing):
+            player.hp += lesserHealingPotion.healing
         else:
             player.hp = player.maxHp
 
@@ -309,6 +216,7 @@ while gameLoop:
 
             if not player.hasBeenInFirwoodRetreat:
                 firwoodRetreatIntroDialog()
+                print("heiei")
                 player.hasBeenInFirwoodRetreat = True
 
             if player.hasBeenInFirwoodRetreat:
@@ -330,7 +238,7 @@ while gameLoop:
                         print("Familiar librarians greet you with welcoming smiles and nods.")
 
                         print()
-                        actionAncientLibrary = input()
+                        actionAncientLibrary = input("Library action: ")
                         print()
 
                         if actionAncientLibrary == "look around":
@@ -350,7 +258,7 @@ while gameLoop:
                             if player.playerClass == "Wretched":
 
                                 print()
-                                actionChooseClass = input()
+                                actionChooseClass = input("Choose whose history to delve deeper in: ")
                                 print()
 
                                 if actionChooseClass == "Elandor":
@@ -361,14 +269,11 @@ while gameLoop:
 
                                 elif actionChooseClass == "Seraph":
                                     player.chosenClass("Theif")
-                                
-                                else:
-                                    print("You can't go there")
 
                             if player.playerClass != "Wretched":
                                 False
 
-                                print(f"As you embrace the path of the {player.playerClass}, the ancient scrolls unveil the mastery, history, and extraordinary feats of your chosen discipline.")
+                                print(f"As you embrace the path of the {player.playerClass}, the ancient scrolls unveil the mastery, history,\nand extraordinary feats of your chosen discipline.")
                                 print()
                                 print(f"@*=== {player.name} the {player.playerClass} ===*@")
 
@@ -388,17 +293,32 @@ while gameLoop:
         print("Saved characters:"), print()
         with open(player_data_file, 'r') as file:
             for line in file:
-                saved_player = json.loads(line)
+                saved_player = json.load(line)
                 print(" ", saved_player['name'])
 
     if action == "save":
-        saveGame()
+        saveGame(player)
         print("Player data saved successfully!")
 
     if action.startswith("load "):
         player_name_to_load = action[5:]
-        load_player(player_name_to_load)
-
+        saved_player = load_player(player_name_to_load)
+        if(saved_player != 0):
+            player.name = saved_player['name']
+            player.hp = saved_player['hp']
+            player.maxHp = saved_player['maxHp']
+            player.damage = saved_player['damage']
+            player.defense = saved_player['defense']
+            player.marks = saved_player['marks']
+            player.playerClass = saved_player['playerClass']
+            player.level = saved_player['level']
+            player.xp = saved_player['xp']
+            player.maxXp = saved_player['maxXp']
+            player.areaName = saved_player['areaName']
+            player.skillPoints = saved_player['skillPoints']
+            player.strength = saved_player['strenght']
+            player.agility = saved_player['agility']
+            player.willpower = saved_player['willpower']
     if action.startswith("delete "):
         character_name_to_delete = action[7:]
         deleted = delete_character(character_name_to_delete)
@@ -408,24 +328,4 @@ while gameLoop:
             print(f"No character found with the name '{character_name_to_delete}'")
 
     if action == "new":
-        
-        while True:
-
-            introDialog()
-
-            player_name = input("Do you remember your name, adventurer?: ")
-
-            with open(player_data_file, 'r') as file:
-                for line in file:
-                    saved_player = json.loads(line)
-                    if saved_player['name'] == player_name:
-                        print(), print("This name is already taken. Please choose a different name"), print()
-                        break
-                    
-                else:
-                    print()
-                    introCommands()
-                    player = Player(player_name, hp=100, maxHp=100, dmg=15, eqWeapon="fists", eqArmor="rags", defense=0, marks=4, areaName=windlassShore.name, playerClass="Wretched", level=1, xp=0, maxXp=50, skillPoints=0, strength=5, agility=5, will=5, hasHorse=False, hasBeenInFirwoodRetreat=False, hasBeenInAncientLibrary=False)
-                    break
-
-    # JSON CODE #
+        player = createNewCharacter(windlassShore)

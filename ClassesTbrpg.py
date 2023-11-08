@@ -1,11 +1,11 @@
 from ascii_magic import AsciiArt
 
 class Player:
-    def __init__(self, name, hp, maxHp, dmg, eqWeapon, eqArmor, defense, marks, areaName, playerClass, level, xp, maxXp, skillPoints, strength, agility, will, hasHorse, hasBeenInFirwoodRetreat, hasBeenInAncientLibrary):
+    def __init__(self, name, hp, maxHp, damage, defense, eqWeapon, eqArmor, marks, areaName, playerClass, level, xp, maxXp, skillPoints, strength, agility, willpower, hasHorse, hasBeenInFirwoodRetreat, hasBeenInAncientLibrary):
         self.name = name
         self.hp = hp
         self.maxHp = maxHp
-        self.dmg = dmg
+        self.damage = damage
         self.eqWeapon = eqWeapon
         self.eqArmor = eqArmor
         self.defense = defense
@@ -18,7 +18,7 @@ class Player:
         self.skillPoints = skillPoints
         self.strength = strength
         self.agility = agility
-        self.will = will
+        self.willpower = willpower
         self.hasHorse = hasHorse
         self.hasBeenInFirwoodRetreat = hasBeenInFirwoodRetreat
         self.hasBeenInAncientLibrary = hasBeenInAncientLibrary
@@ -55,7 +55,7 @@ class Player:
         print()
         print(self.hp, "/", self.maxHp, "Hp")
         print()
-        print(f"Damage: {self.dmg}")
+        print(f"Damage: {self.damage}")
         print(f"Defense: {self.defense}")
         print()
         print(f"Level: {self.level}")
@@ -64,12 +64,16 @@ class Player:
         print()
         print(f"Strenght: {self.strength}")
         print(f"Agility: {self.agility}")
-        print(f"Willpower: {self.will}")
+        print(f"Willpower: {self.willpower}")
 
     def attackEnemy(self, enemy):
-        dmgDealtToEnemy = self.dmg
+        dmgDealtToEnemy = self.damage
         enemy.hp -= dmgDealtToEnemy
         return dmgDealtToEnemy
+    
+    def equipArmor(self, armor):
+        if armor.name == "Rags":
+            self.defense = armor.defense
     
     
 class Areas:
@@ -84,20 +88,26 @@ class Areas:
 
 class Enemy:
     enemyList = []
-    def __init__(self, name, hp, maxHp, dmg, marks, xp):
+    def __init__(self, name, hp, maxHp, damage, marks, xp):
         self.name = name
         self.hp = hp
         self.maxHp = maxHp
-        self.dmg = dmg
+        self.damage = damage
         self.marks = marks
         self.xp = xp
 
         Enemy.enemyList.append(self)
 
     def attackPlayer(self, player):
-        dmgDealtToPlayer = self.dmg
-        player.hp -= dmgDealtToPlayer
-        return dmgDealtToPlayer
+
+        if player.defense >= self.damage:
+            dmgDealtToPlayer = 0
+
+        else:
+
+            dmgDealtToPlayer = (self.damage - player.defense)
+            player.hp -= dmgDealtToPlayer
+            return dmgDealtToPlayer
     
     def gethp(self):
         return self.hp
@@ -133,24 +143,24 @@ class Enemy:
             
 
 class Weapons:
-    def __init__(self, name, dmgBonus, cost):
+    def __init__(self, name, damage, cost):
         self.name = name
-        self.dmg_bonus = dmgBonus
+        self.damage = damage
         self.cost = cost
 
 class Armor:
-    def __init__(self, name, defBonus, strBonus, agiBonus, willBonus, cost):
+    def __init__(self, name, defense, strength, agility, willpower, cost):
         self.name = name
-        self.def_bonus = defBonus
-        self.strBonus = strBonus
-        self.agiBonus = agiBonus
-        self.willBonus = willBonus
+        self.defense = defense
+        self.strength = strength
+        self.agility = agility
+        self.willpower = willpower
         self.cost = cost
 
 class Potion:
-    def __init__(self, name, healingValue, cost):
+    def __init__(self, name, healing, cost):
         self.name = name
-        self.healingValue = healingValue
+        self.healing = healing
         self.cost = cost
 
 def showCommands():
@@ -158,10 +168,10 @@ def showCommands():
     print("hunt              - Discover a menacing presence, ready to battle")
     print("heal              - Rejuvenate with your healing potion's magic")
     print("stats             - Review your character's details")
-    print("map               - Explore your local map in detail")
-    print("travel (location) - Eplore the marked location on your map")
     print("look around       - Explore the surroundings in the city")
+    print("map               - Explore your local map in detail")
     print("enter (location)  - Enter desired building or place in your current area")
+    print("travel (location) - Eplore the marked location on your map")
     print("commands          - Discover more actions on the logbook's reverse")
     print()
     print("characters              - View all saved characters")
@@ -221,7 +231,5 @@ def ancientLibraryIntroDialog():
     print(" * Elandor Stormweaver the Grand Wizard")
     print(" * Thaelen Ironclad the Mighty Warrior")
     print(" * Seraph Song the Invisible Theif")
-    print()
-    print("Choose whose history to delve deeper in, adventurer")
     print()
     print('"Elandor / Thaelen / Seraph"')
