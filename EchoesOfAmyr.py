@@ -292,8 +292,8 @@ while gameLoop:
     if action == "characters":
         print("Saved characters:"), print()
         with open(player_data_file, 'r') as file:
-            for line in file:
-                saved_player = json.load(line)
+            saved_players = json.load(file)
+            for saved_player in saved_players:
                 print(" ", saved_player['name'])
 
     if action == "save":
@@ -303,6 +303,7 @@ while gameLoop:
     if action.startswith("load "):
         player_name_to_load = action[5:]
         saved_player = load_player(player_name_to_load)
+
         if(saved_player != 0):
             player.name = saved_player['name']
             player.hp = saved_player['hp']
@@ -316,9 +317,10 @@ while gameLoop:
             player.maxXp = saved_player['maxXp']
             player.areaName = saved_player['areaName']
             player.skillPoints = saved_player['skillPoints']
-            player.strength = saved_player['strenght']
+            player.strength = saved_player['strength']
             player.agility = saved_player['agility']
             player.willpower = saved_player['willpower']
+
     if action.startswith("delete "):
         character_name_to_delete = action[7:]
         deleted = delete_character(character_name_to_delete)
@@ -328,4 +330,4 @@ while gameLoop:
             print(f"No character found with the name '{character_name_to_delete}'")
 
     if action == "new":
-        player = createNewCharacter(windlassShore)
+        player = createNewCharacter()

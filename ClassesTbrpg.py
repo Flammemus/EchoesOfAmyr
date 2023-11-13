@@ -62,7 +62,7 @@ class Player:
         print("Xp:", self.xp, "/", self.maxXp)
         print(f"Available skill points: {self.skillPoints}")
         print()
-        print(f"Strenght: {self.strength}")
+        print(f"Strength: {self.strength}")
         print(f"Agility: {self.agility}")
         print(f"Willpower: {self.willpower}")
 
